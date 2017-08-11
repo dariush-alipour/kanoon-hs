@@ -15,6 +15,7 @@ module(gregorian_calendar).
 
 %% datas
 data(hit).
+data(calendar_system).
 
 %% types
 type(segment).
@@ -22,7 +23,6 @@ type(collision_check).
 type(moment).
 type(moment_segment).
 type(calendar_set).
-type(calendar_system).
 
 %% uses
 use(module(scheduler), module(rich_event)).
@@ -57,17 +57,17 @@ use(module(collision), type(segment)).
 use(module(collision), type(collision_check)).
 use(type(collision_check), type(segment)).
 
-use(module(calendar), type(calendar_system)).
-use(module(gregorian_calendar), type(calendar_system)).
+use(module(calendar), data(calendar_system)).
+use(module(gregorian_calendar), data(calendar_system)).
 
 use(module(moment), type(moment)).
 use(module(moment), module(calendar)).
 
-use(type(calendar_system), type(moment)).
+use(data(calendar_system), type(moment)).
 
 use(type(moment_segment), type(moment)).
 
-use(type(calendar_set), type(calendar_system)).
+use(type(calendar_set), data(calendar_system)).
 
 
 
