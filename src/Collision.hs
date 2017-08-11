@@ -8,7 +8,7 @@ module Collision
 import qualified Data.List as List
 
 data Hit = Albr | Arbl | Acbw | Awbc | Awbw deriving (Eq, Show)
-type Segment = (Int, Int)
+type Segment = (Num a) => (a, a)
 type CollisionCheck = Segment -> Segment -> [Hit]
 
 -- Check whether a's right / b's left is hit
