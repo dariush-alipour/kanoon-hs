@@ -58,13 +58,13 @@ import(gregorian_calendar, calendar_system).
 %% module calendar_system
 %% data/type
 module(calendar_system).
-export(calendar_system, type(calendar_system)).
+export(calendar_system, data(calendar_system)).
 import(calendar_system, moment).
 
 %% module moment
 %% data/type
 module(moment).
-export(moment, type(moment)).
+export(moment, data(moment)).
 
 %% module collision
 module(collision).
