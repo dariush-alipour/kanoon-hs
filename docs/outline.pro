@@ -42,7 +42,7 @@ import(repeat, event).
 %% module sequel
 module(sequel).
 export(sequel, data(sequel)).
-uses(sequel, event).
+import(sequel, event).
 
 %% module calendar
 module(calendar).
@@ -76,7 +76,7 @@ module(phrase).
 
 %% queries ====================================================================
 
-%% recursive use query
+%% recursive dependency query
 depends_on(X, Y) :- import(X, Y).
 depends_on(X, Y) :- import(X, Z), depends_on(Z, Y).
 
