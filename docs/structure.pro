@@ -1,87 +1,82 @@
 %% modules
-module(scheduler).
-module(sequences).
-module(sequence).
-module(rich_event).
-module(event).
-module(repeat).
-module(sequel).
-module(overlap).
-module(moment).
+%% module(repeat).
+%% module(sequel).
+%% module(strings).
+
+%% module collision
 module(collision).
-module(strings).
-module(calendar).
+export(collision, data(hit)).
+export(collision, type(segment)).
+
+%% module moment
+%% data/type
+module(moment).
+export(moment, type(moment)).
+
+%% module calendar_system
+%% data/type
+module(calendar_system).
+export(calendar_system, type(calendar_system)).
+import(calendar_system, moment).
+
+%% module gregorian_calendar
 module(gregorian_calendar).
+import(gregorian_calendar, calendar_system).
 
-%% datas
-data(hit).
-data(calendar_system).
+%% module calendar
+module(calendar).
+export(calendar, type(calendar_toolbox)).
+import(calendar, calendar_system).
 
-%% types
-type(segment).
-type(collision_check).
-type(moment).
-type(moment_segment).
-type(calendar_set).
+%% module event
+module(event).
+export(event, type(event)).
+export(event, type(moment_segment)).
+import(event, moment).
+
 
 %% uses
-use(module(scheduler), module(rich_event)).
-use(module(scheduler), module(sequences)).
-use(module(scheduler), module(strings)).
-use(module(scheduler), module(gregorian_calendar)).
-use(module(scheduler), module(calendar)).
+%% module(scheduler).
+%% import(module(scheduler), module(rich_event)).
+%% import(module(scheduler), module(sequences)).
+%% import(module(scheduler), module(strings)).
+%% import(module(scheduler), module(gregorian_calendar)).
+%% import(module(scheduler), module(calendar)).
 
-use(module(sequences), module(sequence)).
-use(module(sequences), module(overlap)).
+%% module(sequences).
+%% uses(module(sequences), module(sequence)).
+%% uses(module(sequences), module(overlap).
 
-use(module(sequence), module(rich_event)).
+%% module(sequence).
+%% uses(module(sequence), module(rich_event)).
 
-use(module(rich_event), module(event)).
-use(module(rich_event), module(repeat)).
-use(module(rich_event), module(sequel)).
-use(module(rich_event), module(overlap)).
+%% module(rich_event).
+%% uses(module(rich_event), module(event)).
+%% uses(module(rich_event), module(repeat)).
+%% uses(module(rich_event), module(sequel)).
+%% uses(module(rich_event), module(overlap)).
 
-use(module(event), type(moment_segment)).
-use(module(event), module(moment)).
+%% uses(module(repeat), module(event)).
 
-use(module(repeat), module(event)).
+%% uses(module(sequel), module(event)).
 
-use(module(sequel), module(event)).
-
-use(module(overlap), module(event)).
-use(module(overlap), module(collision)).
-use(module(overlap), data(hit)).
-
-use(module(collision), data(hit)).
-use(module(collision), type(segment)).
-use(module(collision), type(collision_check)).
-use(type(collision_check), type(segment)).
-
-use(module(calendar), data(calendar_system)).
-use(module(gregorian_calendar), data(calendar_system)).
-
-use(module(moment), type(moment)).
-use(module(moment), module(calendar)).
-
-use(data(calendar_system), type(moment)).
-
-use(type(moment_segment), type(moment)).
-
-use(type(calendar_set), data(calendar_system)).
-
+%% module(overlap).
+%% uses(module(overlap, module(event)).
+%% uses(module(overlap, module(collision)).
+%% uses(module(overlap, data(hit)).
 
 
 %% queries
 
 %% recursive use query
-ever_use(X, Y) :- use(X, Y).
-ever_use(X, Y) :- use(X, Z), ever_use(Z, Y).
+depends_on(X, Y) :- import(X, Y).
+depends_on(X, Y) :- import(X, Z), depends_on(Z, Y).
 
 %% circular dependency query
-circular_dependency(X, Y) :- ever_use(X, Y), ever_use(Y, X).
+circular_dependency(X, Y) :- depends_on(X, Y), depends_on(Y, X).
 
 %% independent_module query
-independent_module(X) :- module(X), not(ever_use(module(X), _)).
+independent_module(X) :- module(X), not(depends_on(X, _)).
 
 %% useless_module query
-useless_module(X) :- module(X), X \== scheduler, not(ever_use(_, module(X))).
+useless_module(X) :- module(X), X \== scheduler, not(depends_on(_, module(X))).
