@@ -27,12 +27,14 @@ import(gregorian_calendar, calendar_system).
 module(calendar).
 export(calendar, type(calendar_toolbox)).
 import(calendar, calendar_system).
+import(calendar, moment).
 
 %% module event
 module(event).
 export(event, type(event)).
 export(event, type(moment_segment)).
 import(event, moment).
+import(event, calendar).
 
 
 %% uses
@@ -79,4 +81,4 @@ circular_dependency(X, Y) :- depends_on(X, Y), depends_on(Y, X).
 independent_module(X) :- module(X), not(depends_on(X, _)).
 
 %% useless_module query
-useless_module(X) :- module(X), X \== scheduler, not(depends_on(_, module(X))).
+useless_module(X) :- module(X), X \== scheduler, not(depends_on(_, X)).
