@@ -4,6 +4,7 @@
 :- discontiguous(module/1).
 :- discontiguous(export/2).
 :- discontiguous(import/2).
+:- discontiguous(prepared/1).
 
 %% module scheduler
 module(scheduler).
@@ -120,22 +121,26 @@ import(calendar_system, moment).
 module(race).
 %% Race = Sleep | Meet | Call | Party | Know | ...
 export(race, data(race)).
+prepared(race).
 
 %% module Verdict
 module(verdict).
 %% Verdict = Allow | Eliminate | Fit
 export(verdict, data(verdict)).
+prepared(verdict).
 
 %% module moment
 %% data/type
 module(moment).
 export(moment, data(moment)).
+prepared(moment).
 
 %% module collision
 module(collision).
 %% Hit = Albr | Arbl | Acbw | Awbc | Awbw
 export(collision, data(hit)).
 export(collision, type(segment)).
+prepared(collision).
 
 %% module phraser
 module(phraser).
@@ -146,17 +151,25 @@ module(phraser).
 depends_on(X, Y) :- import(X, Y).
 depends_on(X, Y) :- import(X, Z), depends_on(Z, Y).
 
-%% circular dependency query
+%% modules involved in possible circular dependency
 circular_dependency(X, Y) :- depends_on(X, Y), depends_on(Y, X).
 
-%% independent_module query
+%% modules with no dependency
 independent_module(X) :- module(X), not(depends_on(X, _)).
 
-%% useless_module query
+%% modules defined but never been used
 useless_module(X) :- module(X), X \== scheduler, not(depends_on(_, X)).
 
-%% missing_module query
+%% modules asked for but not defined at all
 missing_module(X) :- depends_on(_, X), not(module(X)).
+
+%% modules with unprepared dependency
+dependency_failure_module(X) :- module(X), import(X, Y), missing_module(Y).
+dependency_failure_module(X) :- module(X), import(X, Y), not(prepared(Y)).
+
+%% a suggestion on which modules to prepare first
+preparable_module(X) :- module(X), not(prepared(X)), not(dependency_failure_module(X)).
+
 
 %% usage ======================================================================
 
