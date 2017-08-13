@@ -7,30 +7,65 @@
 
 %% module scheduler
 module(scheduler).
-import(scheduler, rich_event).
-import(scheduler, phrase).
+import(scheduler, jar).
+import(scheduler, decorator).
+import(scheduler, phraser).
 import(scheduler, gregorian_calendar).
-import(scheduler, calendar_system).
 import(scheduler, calendar).
 
-%% module overlap
-module(overlap).
-import(overlap, rich_event).
-import(overlap, event).
-import(overlap, collision).
+%% module decorator
+module(decorator).
+import(decorator, jar).
+import(decorator, affair).
+import(decorator, collision).
 
-%% module rich_event
-module(rich_event).
-export(rich_event, data(rich_event)).
-import(rich_event, event).
-import(rich_event, repeat).
-import(rich_event, sequel).
-import(rich_event, overlap).
+%% module affair
+module(affair).
+%% Affair = (Race, Race, Verdict)
+import(affair, race).
+import(affair, verdict).
+
+%% module jar
+module(jar).
+/*
+Jar = {
+  seed :: Seed,
+  events :: [Event]
+}
+*/
+export(jar, data(jar)).
+import(jar, seed).
+import(jar, event).
+
+%% module seed
+module(seed).
+/*
+Seed = {
+  name :: String,
+  race :: Race,
+  verdict :: Verdict,
+  period :: Period,
+  repeats :: [Repeat],
+  sequels :: [Sequel]
+}
+*/
+export(seed, data(seed)).
+import(seed, repeat).
+import(seed, sequel).
 
 %% module event
 module(event).
+/*
+Event = {
+  name :: String,
+  period :: Period,
+  isVirtual :: Bool,
+  isRepeated :: Bool,
+  isSequeled :: Bool
+}
+*/
 export(event, data(event)).
-export(event, type(moment_segment)).
+export(event, type(period)).
 import(event, moment).
 import(event, calendar).
 
@@ -46,10 +81,16 @@ import(sequel, event).
 
 %% module calendar
 module(calendar).
-export(calendar, type(calendar_toolbox)).
+/*
+calendar_toolbox = {
+  calendars :: [CalendarSystem],
+  phraser :: PhraserPowered
+}
+*/
+export(calendar, data(calendar_toolbox)).
 import(calendar, calendar_system).
 import(calendar, moment).
-import(calendar, phrase).
+import(calendar, phraser).
 
 %% module gregorian_calendar
 module(gregorian_calendar).
@@ -58,8 +99,32 @@ import(gregorian_calendar, calendar_system).
 %% module calendar_system
 %% data/type
 module(calendar_system).
+/*
+CalendarSystem = {
+  calendarId :: String,
+  l10n :: Moment,
+  i18n :: Moment,
+  monthLength :: Moment -> Int,
+  isMonthValid :: Moment -> Bool, 
+  isDayValid :: Moment -> Bool,
+  isLeap :: Moment -> Bool,
+  offsetYear :: Moment -> Int -> Moment,
+  offsetMonth :: Moment -> Int -> Moment,
+  offsetDay :: Moment -> Int -> Moment
+}
+*/
 export(calendar_system, data(calendar_system)).
 import(calendar_system, moment).
+
+%% module Race
+module(race).
+%% Race = Sleep | Meet | Call | Party | Know | ...
+export(race, data(race)).
+
+%% module Verdict
+module(verdict).
+%% Verdict = Allow | Eliminate | Fit
+export(verdict, data(verdict)).
 
 %% module moment
 %% data/type
@@ -68,11 +133,12 @@ export(moment, data(moment)).
 
 %% module collision
 module(collision).
+%% Hit = Albr | Arbl | Acbw | Awbc | Awbw
 export(collision, data(hit)).
 export(collision, type(segment)).
 
-%% module phrase
-module(phrase).
+%% module phraser
+module(phraser).
 
 %% queries ====================================================================
 
