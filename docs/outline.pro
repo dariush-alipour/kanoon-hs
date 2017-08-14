@@ -161,15 +161,17 @@ independent_module(X) :- module(X), not(depends_on(X, _)).
 useless_module(X) :- module(X), X \== scheduler, not(depends_on(_, X)).
 
 %% modules asked for but not defined at all
-missing_module(X) :- depends_on(_, X), not(module(X)).
+missing_module_(X) :- depends_on(_, X), not(module(X)).
+missing_module(Xs) :- setof(X, missing_module_(X), Xs).
 
 %% modules with unprepared dependency
-dependency_failure_module(X) :- module(X), import(X, Y), missing_module(Y).
-dependency_failure_module(X) :- module(X), import(X, Y), not(prepared(Y)).
+dependency_failure_module_(X) :- module(X), import(X, Y), missing_module_(Y).
+dependency_failure_module_(X) :- module(X), import(X, Y), not(prepared(Y)).
+dependency_failure_module(Xs) :- setof(X, dependency_failure_module_(X), Xs).
 
 %% a suggestion on which modules to prepare first
-preparable_module(X) :- module(X), not(prepared(X)), not(dependency_failure_module(X)).
-
+preparable_module_(X) :- module(X), not(prepared(X)), not(dependency_failure_module_(X)).
+preparable_module(Xs) :- setof(X, preparable_module_(X), Xs).
 
 %% usage ======================================================================
 
