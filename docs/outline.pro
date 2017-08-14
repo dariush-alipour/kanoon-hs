@@ -25,6 +25,7 @@ module(affair).
 %% Affair = (Race, Race, Verdict)
 import(affair, race).
 import(affair, verdict).
+prepared(affair).
 
 %% module jar
 module(jar).
