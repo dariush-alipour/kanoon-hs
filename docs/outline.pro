@@ -155,10 +155,12 @@ depends_on(X, Y) :- import(X, Z), depends_on(Z, Y).
 circular_dependency(X, Y) :- depends_on(X, Y), depends_on(Y, X).
 
 %% modules with no dependency
-independent_module(X) :- module(X), not(depends_on(X, _)).
+independent_module_(X) :- module(X), not(depends_on(X, _)).
+independent_module(Xs) :- setof(X, independent_module_(X), Xs).
 
 %% modules defined but never been used
-useless_module(X) :- module(X), X \== scheduler, not(depends_on(_, X)).
+useless_module_(X) :- module(X), X \== scheduler, not(depends_on(_, X)).
+useless_module(Xs) :- setof(X, useless_module_(X), Xs).
 
 %% modules asked for but not defined at all
 missing_module_(X) :- depends_on(_, X), not(module(X)).
