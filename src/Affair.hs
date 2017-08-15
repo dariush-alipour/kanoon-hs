@@ -1,6 +1,6 @@
-module Affair where
+module Affair (Affair) where
 
-import qualified Race as Race 
-import qualified Verdict as Verdict 
+import Matter
+import Verdict
 
-type Affair = (Race.Race, Race.Race, Verdict.Verdict)
+type Affair = (Matter, Matter, Verdict)

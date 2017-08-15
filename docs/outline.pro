@@ -7,7 +7,9 @@
 :- discontiguous(prepared/1).
 
 %% module scheduler
+%% render :: Dictionary -> [CalendarSystem] -> CalendarSystem.Id -> [Affair] -> [Seed] -> Period -> [Jar]
 module(scheduler).
+export(scheduler, func(render)).
 import(scheduler, jar).
 import(scheduler, decorator).
 import(scheduler, phraser).
@@ -22,8 +24,8 @@ import(decorator, collision).
 
 %% module affair
 module(affair).
-%% Affair = (Race, Race, Verdict)
-import(affair, race).
+%% Affair = (Matter, Matter, Verdict)
+import(affair, matter).
 import(affair, verdict).
 prepared(affair).
 
@@ -44,7 +46,7 @@ module(seed).
 /*
 Seed = {
   name :: String,
-  race :: Race,
+  matter :: Matter,
   verdict :: Verdict,
   period :: Period,
   repeats :: [Repeat],
@@ -118,11 +120,14 @@ CalendarSystem = {
 export(calendar_system, data(calendar_system)).
 import(calendar_system, moment).
 
-%% module Race
-module(race).
-%% Race = Sleep | Meet | Call | Party | Know | ...
-export(race, data(race)).
-prepared(race).
+%% module Matter
+module(matter).
+%% Matter = String
+%% Know | Sleep | Meet | Eat | Telephone | Drive | Read
+%% Work | Meditate | Learn | Sport | Play | Party
+%% Shower | Brush | Toilet | ...
+export(matter, type(matter)).
+prepared(matter).
 
 %% module Verdict
 module(verdict).
